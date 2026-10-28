@@ -41,6 +41,8 @@ LightCraft의 고정 폰트 버전 `b076417b5880bd4154bd22f00695b1d28c6bea83`에
 무료로 사용할 수 있고 앱에 포함해 배포할 수도 있습니다. 배포 시 저작권 고지와
 [OFL 라이선스](https://github.com/storytold/craft-fonts/blob/b076417b5880bd4154bd22f00695b1d28c6bea83/fonts/nanum-gothic/OFL.txt)를
 함께 보존해야 합니다. 영문과 숫자는 기존 Inter를 사용합니다.
+`cargo xtask web`의 `web-site/`에도 `OFL-nanum-gothic.txt`를 포함한 글꼴 라이선스를
+복사합니다. 웹사이트를 배포할 때는 `OFL-*.txt` 파일도 함께 올려야 합니다.
 
 ```sh
 git clone https://github.com/storytold/craft-fonts ../craft-fonts
