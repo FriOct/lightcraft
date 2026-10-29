@@ -2538,5 +2538,12 @@
   "Show Metadata For": "메타데이터 표시 대상",
   "The active photo's capture time can't be read": "현재 사진의 촬영 시간을 읽을 수 없습니다",
   "The place names list towns of 15,000 people or more: in a smaller one, City gets the nearest larger town.": "지역명 목록에는 인구 15,000명 이상인 도시만 있습니다. 더 작은 지역은 ‘도시’에 가장 가까운 큰 도시가 표시됩니다.",
-  "Unit": "단위"
+  "Unit": "단위",
+  "Check for Updates…": "업데이트 확인…",
+  "Enable Filters": "필터 사용",
+  "Frame Rate": "프레임 속도",
+  "Import Print Template": "인쇄 템플릿 가져오기",
+  "Lock Aspect Ratio": "가로세로 비율 잠금",
+  "Right Panel": "오른쪽 패널",
+  "Show Metadata for Selected Photos": "선택한 사진의 메타데이터 표시"
 }

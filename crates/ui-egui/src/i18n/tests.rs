@@ -392,7 +392,8 @@ fn korean_photography_terms_counts_and_dates() {
     assert_eq!(date_group_label("2026-09-20", false), "2026년 9월 20일 일요일");
     assert_eq!(date_group_label("2026-09", false), "2026년 9월");
     for n in [0, 1, 2, 5, 21] {
-        assert_eq!(tr_format!("Imported {} photo{}", n, if n == 1 { "" } else { "s" }), format!("사진 {n}장을 가져왔습니다"));
+        let suffix = plural_s(n);
+        assert_eq!(tr_format!("Imported {} photo{}", n, suffix), format!("사진 {n}장을 가져왔습니다"));
     }
     assert_eq!(tr_format!("Added {n} photo{} to “{}”", "s", "서울 RAW 2026", n = 3), "“서울 RAW 2026”에 3장을 추가했습니다");
     assert_eq!(tr_format!("Preset: {name}", name = "Golden Hour"), "프리셋: Golden Hour");
@@ -1170,7 +1171,8 @@ fn assert_polish_counts() {
             ("cached picture", "cached pictures", "Obrazy w pamięci podręcznej"),
             ("photo has its denoised picture.", "photos have their denoised picture.", "Zdjęcia z odszumioną wersją"),
         ] {
-            assert_eq!(tr_format!("{n} {noun}", n = n, noun = tr(if n == 1 { one } else { many })), format!("{noun}: {n}"));
+            let label = tr(if n == 1 { one } else { many });
+            assert_eq!(tr_format!("{n} {noun}", n = n, noun = label), format!("{noun}: {n}"));
         }
         assert_eq!(tr_format!("Delete {n} Photos", n = n), format!("Usuń zdjęcia ({n})"));
         assert_eq!(tr_format!("{n} preset{}", s, n = n), format!("Ustawienia: {n}"));

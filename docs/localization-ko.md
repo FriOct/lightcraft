@@ -68,7 +68,7 @@ CRAFT_FONTS_DIR=../craft-fonts CRAFT_FONTS_REQUIRED=1 cargo run -p lightcraft
 
 초기 카탈로그는 yunbin (@sksdl)의 [PR #1728](https://github.com/storytold/lightcraft/pull/1728),
 커밋 `7f2624dc2fca19e0a4712368bb666c2eff0c36da`에서 가져왔습니다. @FriOct가 Codex와 함께
-표현을 다듬고 최신 UI 문구를 추가했습니다. 현재 일반 문구 2,540개와 format 문구 307개를
+표현을 다듬고 최신 UI 문구를 추가했습니다. 현재 일반 문구 2,547개와 format 문구 307개를
 포함합니다. 이 수는 영어로 유지한 항목과 이전 버전의 키도 포함한 **카탈로그 항목 수**이며,
 모든 오류와 릴리스 노트까지 번역했다는 뜻은 아닙니다. 출처·라이선스는
 [`assets/ATTRIBUTION.md`](../assets/ATTRIBUTION.md)에 기록합니다.
