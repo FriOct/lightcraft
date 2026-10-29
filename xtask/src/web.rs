@@ -396,11 +396,11 @@ mod tests {
         assert_eq!(chinese_font_in_manifest("BIZ UDPGothic | Regular | fonts/biz.ttf | Jpan,Latn | OFL-1.1 | fonts/biz/OFL.txt"), None);
     }
 
-    fn font_notice_fixture(name: &str) -> (PathBuf, PathBuf, PathBuf, String) {
-        let dir = root().join("target/web-font-notice-tests").join(format!("{name}-{}", std::process::id()));
-        let repo = dir.join("repo");
-        let craft = dir.join("craft");
-        let out = dir.join("site");
+    fn font_notice_fixture(name: &str) -> (tempfile::TempDir, PathBuf, PathBuf, PathBuf, String) {
+        let dir = tempfile::Builder::new().prefix(&format!("lightcraft-web-font-notice-{name}-")).tempdir().unwrap();
+        let repo = dir.path().join("repo");
+        let craft = dir.path().join("craft");
+        let out = dir.path().join("site");
         std::fs::create_dir_all(repo.join("assets/fonts")).unwrap();
         std::fs::create_dir_all(craft.join("fonts")).unwrap();
         std::fs::create_dir_all(&out).unwrap();
@@ -410,12 +410,32 @@ mod tests {
             .map(|(family, name, _)| format!("{family} | Regular | unused.ttf | Kore | OFL-1.1 | fonts/{name}\n"))
             .collect::<String>();
         std::fs::write(craft.join("fonts/manifest.txt"), &manifest).unwrap();
-        (repo, craft, out, manifest)
+        (dir, repo, craft, out, manifest)
+    }
+
+    #[test]
+    fn font_notice_fixtures_do_not_inherit_inputs_or_outputs() {
+        let (old_dir, _, old_craft, old_out, _) = font_notice_fixture("isolation");
+        std::fs::write(old_craft.join("fonts/OFL-nanum-gothic.txt"), b"previous source notice").unwrap();
+        std::fs::write(old_out.join("OFL-Inter.txt"), b"previous bundle notice").unwrap();
+
+        let (fresh_dir, _, fresh_craft, fresh_out, _) = font_notice_fixture("isolation");
+        assert_ne!(old_dir.path(), fresh_dir.path());
+        assert!(!fresh_craft.join("fonts/OFL-nanum-gothic.txt").exists(), "a fresh fixture must not inherit source notices");
+        assert!(!fresh_out.join("OFL-Inter.txt").exists(), "a fresh fixture must not inherit bundle output");
+
+        let old_path = old_dir.path().to_path_buf();
+        let fresh_path = fresh_dir.path().to_path_buf();
+        drop(old_dir);
+        assert!(!old_path.exists(), "the guard cleans up its own fixture");
+        assert!(fresh_path.is_dir(), "another live fixture must remain intact");
+        drop(fresh_dir);
+        assert!(!fresh_path.exists(), "a fixture must not persist after its guard is dropped");
     }
 
     #[test]
     fn web_bundle_keeps_embedded_font_copyright_and_licence_bytes() {
-        let (repo, craft, out, _) = font_notice_fixture("verbatim");
+        let (_dir, repo, craft, out, _) = font_notice_fixture("verbatim");
         for &(family, name, _) in EMBEDDED_FONT_LICENCES {
             let bytes = format!("Copyright {family}\r\nSIL OFL 1.1\r\nReserved names remain unchanged.\r\n");
             std::fs::write(craft.join("fonts").join(name), bytes).unwrap();
@@ -429,7 +449,7 @@ mod tests {
 
     #[test]
     fn a_missing_korean_notice_fails_instead_of_reusing_the_previous_bundles_notice() {
-        let (repo, craft, out, _) = font_notice_fixture("missing-korean");
+        let (_dir, repo, craft, out, _) = font_notice_fixture("missing-korean");
         for &(family, name, _) in EMBEDDED_FONT_LICENCES {
             if family != "NanumGothic" {
                 std::fs::write(craft.join("fonts").join(name), b"copyright and licence").unwrap();
@@ -449,7 +469,7 @@ mod tests {
 
     #[test]
     fn required_font_notices_cannot_be_silently_omitted() {
-        let (repo, craft, out, manifest) = font_notice_fixture("required");
+        let (_dir, repo, craft, out, manifest) = font_notice_fixture("required");
         let without_korean = manifest.lines().filter(|line| !line.starts_with("NanumGothic | ")).collect::<Vec<_>>().join("\n");
         std::fs::write(craft.join("fonts/manifest.txt"), without_korean).unwrap();
         for &(family, name, _) in EMBEDDED_FONT_LICENCES {
